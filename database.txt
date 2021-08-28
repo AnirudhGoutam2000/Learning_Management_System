@@ -1,0 +1,96 @@
+create database lms;
+use database lms;
+
+create table students(
+student_id int not null primary key auto_increment,
+student_name varchar(30) not null,
+email varchar(60) not null unique,
+mobile varchar(12) not null,
+password varchar(200) not null,
+created datetime,
+branch_id int,
+status_id int not null default 2
+);
+
+alter table students add column activation_code varchar(50);
+
+alter table students add constraint fk_students_branches foreign key (branch_id) references branches (branch_id);
+alter table students add constraint fk_students_status foreign key (status_id) references status (status_id);
+
+insert into students (student_name,email,mobile,password,created,branch_id,activation_code) values (?,?,?,?,?,?,?)
+
+create table branches(
+branch_id int not null primary key auto_increment,
+branch varchar(60) not null unique
+);
+
+insert into branches (branch) values ('Computer Software Engineering'),('Mechanical Engineering'),('Electrical Engineering'),('Civil Enginnering');
+
+
+create table status(
+status_id int not null primary key auto_increment,
+status varchar(10) not null unique
+);
+
+insert into status (status) values ('Active'),('Inactive'),('Closed'),('Blocked'),('Deleted'),('Done'),('Accepted'),('Declined'),('Pending'),('Removed');
+
+
+create table teachers(
+teacher_id int not null primary key auto_increment,
+teacher_name varchar(30) not null,
+t_email varchar(60) not null unique,
+t_mobile varchar(12) not null,
+t_password varchar(12) not null,
+created datetime,
+status_id int not null default 2
+);
+
+alter table teachers add column activation_code varchar(50);
+
+
+"select password,status_id,student_id,student_name,created,mobile,s.branches,branch from student as s inner join branches as b where email=? and s.branch_id=b.branch_id";
+
+create table books(
+book_id int not null primary key auto_increment,
+book_name varchar(100) not null unique,
+author varchar(50) not null,
+publication varchar(50) not null,
+publish_date varchar(12) not null,
+book_edition varchar(50) not null,
+category varchar(50) not null,
+price int not null
+);
+
+
+create table cp_ques
+(
+s_no int auto_increment primary key,
+title varchar(30) not null,
+question varchar(500) not null,
+input varchar(500) not null,
+output varchar(500) not null,
+constraints varchar(500) not null,
+eginput varchar(15) not null,
+egoutput varchar(15) not null
+);
+
+alter table cp_ques add column teacher_id int;
+alter table cp_ques add constraint fk_teacher_cp_ques foreign key (teacher_id) references teachers (teacher_id);
+insert into cp_ques (title,question,input,output,constraints,eginput,egoutput,teacher_id) values (?,?,?,?,?,?,?,?);
+
+alter table cp_ques add column created datetime;
+
+delete from cp_ques where s_no=?;
+
+select title,problem,input,output,constraints,eginput,egoutput,created from cp_ques where s_no=?;
+
+create table notes(
+note_id int not null auto_increment primary key,
+branch_id int,
+subject varchar(50) not null unique,
+path varchar(50) not null
+);
+
+alter table notes add constraint fk_notes_branches foreign key (branch_id) references branches (branch_id);
+
+insert into notes (branch_id,subject,path) values (?,?,?);
